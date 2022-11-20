@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.0.0/dist/tf.min.js"></script>
+    <script>
+        async function DoTraining(model, x, y, ep){
+            const history = await model.fit(x,y , {epochs: ep, callbacks:{
+                onEpochEnd: async (epoch, logs)=>{
+                    console.log("Epoch:" + epoch + "Lost:" + logs.logss);
+                }
+            }})
+        }  
+        
+        const model = tf.sequential();
+        model.add(tf.layers.dense({units: 1, inputShape: [1]}));
+        model.compile({loss: 'meanSquaredError', optimizer: 'sgd'});
+        model.summary();
+
+        const x = tf.tensor2d([-1.0, 0.0, 1.0, 2.0, 3.0, 4.0], [6, 1]);
+        const y = tf.tensor2d([-3.0, -1.0, 1.0, 3.0, 5.0, 7.0], [6, 1]);
+        const x2 = tf.tensor2d([-1.0, 4.0], [2, 1]);
+        const y2 = tf.tensor2d([-3.0, 7.0], [2, 1]);
+        const x3 = tf.tensor2d([-10.0, -6.0, -2.0, 2.0, 6.0, 10.0, 14.0, 18.0], [8, 1]);
+        const y3 = tf.tensor2d([395.0, 139.0, 11.0, 11.0, 139.0, 395.0, 779.0, 1291.0], [8, 1]);
+        const x4 = tf.tensor2d([-10.0, 14.0, 18.0], [3, 1]);
+        const y4 = tf.tensor2d([395.0, 779.0, 1291.0], [3, 1]);
+
+        const a = 3.0
+        const ep = 50
+
+        DoTraining(model, x3, y3, ep).then(()=>{
+            alert(model.predict(tf.tensor2d([a], [1, 1])));
+        })
+    </script>
+</body>
+</html>
